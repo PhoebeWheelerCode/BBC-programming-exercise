@@ -23,12 +23,16 @@ validURL = re.compile(
     r'(?::\d+)?' # optional port
     r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
-def checkURL(url):
-    return re.match(validURL, url)
+def checkURL(userInputURL):
+    return re.match(validURL, userInputURL)
+
+def getHTTP(userInputURL):
+    return urllib.request.urlopen(userInputURL).read()
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
     if checkURL(address):
         print("Acceptable URL: " + address + "\n")
+        print(getHTTP(address))
     else:
         print("Unacceptable URL: " + address + "\n")
