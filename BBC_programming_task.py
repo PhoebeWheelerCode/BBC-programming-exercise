@@ -30,7 +30,8 @@ def checkURL(userInputURL):
 
 def getHTTP(userInputURL):
     jsonVal = requests.get(userInputURL, headers={'accept': 'application/json'})
-    return jsonVal.headers
+    jsonValHeaders = jsonVal.headers
+    return jsonValHeaders["status-code"]
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
