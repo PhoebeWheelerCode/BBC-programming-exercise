@@ -1,5 +1,7 @@
-import urllib.request
+#import urllib.request
+import requests
 import re
+import json
 
 webAddresses = []
 
@@ -27,7 +29,8 @@ def checkURL(userInputURL):
     return re.match(validURL, userInputURL)
 
 def getHTTP(userInputURL):
-    return urllib.request.urlopen(userInputURL).read()
+    jsonVal = requests.get(userInputURL, headers={'accept': 'application/json'})
+    return jsonVal.headers
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
