@@ -4,18 +4,18 @@ import re
 import json
 
 webAddresses = []
-
-print("Enter newline-separated web addresses. When done, enter 'STOP' to stop.")
-while True: #loop until break
-    inputText = input()
-    if inputText.upper() == "STOP": #if input is break condition
-        break #break out of loop
-    elif "\n" in inputText: #if input string contains newlines
-        splitInput = inputText.split("\n") #split by newlines
-        for address in splitInput: #loop through split addresses
-            webAddresses.append(address) #append to list
-    else: #no newlines, no break
-        webAddresses.append(inputText) #append input to list
+#
+# print("Enter newline-separated web addresses. When done, enter 'STOP' to stop.")
+# while True: #loop until break
+#     inputText = input()
+#     if inputText.upper() == "STOP": #if input is break condition
+#         break #break out of loop
+#     elif "\n" in inputText: #if input string contains newlines
+#         splitInput = inputText.split("\n") #split by newlines
+#         for address in splitInput: #loop through split addresses
+#             webAddresses.append(address) #append to list
+#     else: #no newlines, no break
+#         webAddresses.append(inputText) #append input to list
 
 validURL = re.compile(
     r'^(?:http|ftp)s?://' # http:// or https://
@@ -26,7 +26,10 @@ validURL = re.compile(
     r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
 def checkURL(userInputURL):
-    return re.match(validURL, userInputURL)
+    if re.match(validURL, userInputURL) == None: # if none, there is no match
+        return False
+    else:
+        return True
 
 def getHTTP(userInputURL):
     jsonVal = requests.get(userInputURL, headers={'accept': 'application/json'})
@@ -35,8 +38,8 @@ def getHTTP(userInputURL):
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
-    if checkURL(address):
+    if checkURL(address) != None:
         print("Acceptable URL: " + address + "\n")
-        print(getHTTP(address))
+        #print(getHTTP(address))
     else:
         print("Unacceptable URL: " + address + "\n")
