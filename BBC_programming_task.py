@@ -31,23 +31,33 @@ def checkURL(userInputURL):
     else:
         return True
 
-def getHTTP(userInputURL):
-    jsonVal = requests.get(userInputURL, headers={'accept': 'application/json'})
-    jsonValHeaders = jsonVal.headers
-    return jsonValHeaders
+# def getHTTP(userInputURL):
+#     jsonVal = requests.get(userInputURL, stream=True, headers={'accept': 'application/json'})
+#     print (len(jsonVal.raw.read()))
+#     jsonValHeaders = jsonVal.headers
+#     return jsonValHeaders
 
-def getElements(headers):
+def getHTTP(userInputURL):
+    return requests.get(userInputURL, stream=True, headers={'accept': 'application/json'}, timeout=10)
+
+def getElements(url, json):
     values = {}
-    values.update({'content-length':headers['content-length']})
-    values.update({'Date':headers['Date']})
+    values.update(
+                {"Url": url,
+                "Status_code": json.status_code,
+                "Content_length": len(json.raw.read()),
+                "Date": json.headers['Date']
+                }
+                )
+    # values.update({'Date':headers['Date']})
     return values
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
-    if checkURL(address) != None:
-        print("Acceptable URL: " + address + "\n")
-        print(getHTTP(address))
-        headervalues = getHTTP(address)
-        print(getElements(headervalues))
+    if checkURL(address):
+        jsonValue = getHTTP(address)
+
+        print(getElements(address, jsonValue))
+        print()
     else:
-        print("Unacceptable URL: " + address + "\n")
+        print("\nUnacceptable URL: " + address + "\n")
