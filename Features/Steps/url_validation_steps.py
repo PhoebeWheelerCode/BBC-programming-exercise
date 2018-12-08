@@ -1,5 +1,4 @@
-import os
-from behave import given, when, then
+from behave import *
 from BBC_programming_task import checkURL
 
 @given("I have the URL {URL}")
