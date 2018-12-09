@@ -19,9 +19,8 @@ def have_URL(step):
 @when("I pass it to the getElements function")
 def check_url(step):
     step.result = {}
-    step.result = getElements(step.url, step.dictionary)
+    step.result = getElements(step.url, step.response)
 
 @then("I expect the function to return json containing the elements")
 def expect_elements(step):
-    print(step.dictionary.keys())
-    assert set(step.dictionary.keys()) == set(["Url", "Status_code", "Content_length", "Date"])
+    assert set(step.result.keys()) == set(["Url", "Status_code", "Content_length", "Date"])
