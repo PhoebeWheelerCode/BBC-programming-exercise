@@ -3,7 +3,7 @@ Feature: Testing getHTTP function return values
     Scenario Outline: Get headers
         Given I have the valid URL <URL>
         When I pass it to the getHTTP function
-        Then I expect the function to return an object of the type requests.structures.CaseInsensitiveDict
+        Then I expect the function to return an object of the type requests.models.Response, or an error message
 
     Examples:
         | URL |

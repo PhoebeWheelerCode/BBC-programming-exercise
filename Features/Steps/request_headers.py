@@ -10,6 +10,9 @@ def have_URL(step, URL):
 def pass_url(step):
     step.result = getHTTP(step.url)
 
-@then("I expect the function to return an object of the type requests.structures.CaseInsensitiveDict")
+@then("I expect the function to return an object of the type requests.models.Response, or an error message")
 def expect_dict(step):
-    assert isinstance(step.result, requests.structures.CaseInsensitiveDict)
+    if isinstance(step.result, str):
+        assert step.result == "Timeout" or step.result == "ConnectionError"
+    else:
+        assert isinstance(step.result, requests.models.Response)
