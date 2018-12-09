@@ -31,14 +31,13 @@ def checkURL(userInputURL):
     else:
         return True
 
-# def getHTTP(userInputURL):
-#     jsonVal = requests.get(userInputURL, stream=True, headers={'accept': 'application/json'})
-#     print (len(jsonVal.raw.read()))
-#     jsonValHeaders = jsonVal.headers
-#     return jsonValHeaders
-
 def getHTTP(userInputURL):
-    return requests.get(userInputURL, stream=True, headers={'accept': 'application/json'}, timeout=10)
+    try:
+        return requests.get(userInputURL, stream=True, timeout=10, headers={'accept': 'application/json'})
+    except requests.exceptions.Timeout:
+        return 'Timeout'
+    except requests.exceptions.ConnectionError:
+        return 'ConnectionError'
 
 def getElements(url, json):
     values = {}
@@ -49,7 +48,6 @@ def getElements(url, json):
                 "Date": json.headers['Date']
                 }
                 )
-    # values.update({'Date':headers['Date']})
     return values
 
 for address in webAddresses: #loop through contents of list
@@ -57,7 +55,12 @@ for address in webAddresses: #loop through contents of list
     if checkURL(address):
         jsonValue = getHTTP(address)
 
-        print(getElements(address, jsonValue))
-        print()
+        if jsonValue == 'Timeout':
+            print('Timed out request for URL: ' + address + '\n')
+        elif jsonValue == 'ConnectionError':
+            print('Failed to open URL: ' + address + '\n')
+        else:
+            print(getElements(address, jsonValue))
+            print()
     else:
-        print("\nUnacceptable URL: " + address + "\n")
+        print("Unacceptable URL: " + address + "\n")
