@@ -1,4 +1,3 @@
-import urllib.request
 import requests
 import re
 import json
@@ -10,10 +9,6 @@ while True: #loop until break
     inputText = input()
     if inputText.upper() == "STOP": #if input is break condition
         break #break out of loop
-    elif "\n" in inputText: #if input string contains newlines
-        splitInput = inputText.split("\n") #split by newlines
-        for address in splitInput: #loop through split addresses
-            webAddresses.append(address) #append to list
     else: #no newlines, no break
         webAddresses.append(inputText) #append input to list
 
@@ -39,16 +34,18 @@ def getHTTP(userInputURL):
     except requests.exceptions.ConnectionError:
         return 'ConnectionError'
 
-def getElements(url, json):
+def getElements(url, jsonVal):
     values = {}
     values.update(
                 {"Url": url,
-                "Status_code": json.status_code,
-                "Content_length": len(json.raw.read()),
-                "Date": json.headers['Date']
+                "Status_code": jsonVal.status_code,
+                "Content_length": len(jsonVal.raw.read()),
+                "Date": jsonVal.headers['Date']
                 }
                 )
-    return values
+    return json.dumps(values, indent=4)
+
+output = []
 
 for address in webAddresses: #loop through contents of list
     #print(address) # temp - for now, print element of list
@@ -56,11 +53,23 @@ for address in webAddresses: #loop through contents of list
         jsonValue = getHTTP(address)
 
         if jsonValue == 'Timeout':
-            print('Timed out request for URL: ' + address + '\n')
+            print('Request timed out for URL: ' + address + '\n')
         elif jsonValue == 'ConnectionError':
-            print('Failed to open URL: ' + address + '\n')
+            print('Connection error, failed to open URL: ' + address + '\n')
         else:
-            print(getElements(address, jsonValue))
-            print()
+            output.append(getElements(address, jsonValue))
     else:
         print("Unacceptable URL: " + address + "\n")
+
+for jsonOutput in output:
+    print(jsonOutput)
+
+with open('output.json', 'w') as f:
+    f.write("[\n")
+    for jsonOutput in output:
+        f.write(jsonOutput + '\n')
+    f.write("]")
+
+# with open('output.json', 'w') as f:
+#     for jsonOutput in output:
+#         f.write(output)
